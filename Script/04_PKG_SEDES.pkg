@@ -1,0 +1,84 @@
+CREATE OR REPLACE PACKAGE PKG_SEDES AS
+
+    PROCEDURE PROC_BUSCAR_SEDES (p_codcliente IN TB_CLIENTES.CODCLIENTE%TYPE, o_ListaSedes  OUT SYS_REFCURSOR);
+
+    PROCEDURE PROC_REGISTRAR_SEDE (p_codcliente IN TB_SEDES.CODCLIENTE%TYPE, p_pais IN TB_SEDES.PAIS%TYPE, p_departamento IN TB_SEDES.DEPARTAMENTO%TYPE, p_direccion IN TB_SEDES.DIRECCION%TYPE, p_telefono IN TB_SEDES.TELEFONO%TYPE, p_contacto IN TB_SEDES.CONTACTO%TYPE, o_resultado OUT NUMBER);
+
+    PROCEDURE PROC_ACTUALIZAR_SEDE (p_codsede IN TB_SEDES.CODSEDE%TYPE, p_pais IN TB_SEDES.PAIS%TYPE, p_departamento IN TB_SEDES.DEPARTAMENTO%TYPE, p_direccion IN TB_SEDES.DIRECCION%TYPE, p_telefono IN TB_SEDES.TELEFONO%TYPE, p_contacto IN TB_SEDES.CONTACTO%TYPE, o_resultado OUT NUMBER);
+
+    PROCEDURE PROC_ELIMINAR_SEDE (p_codsede IN TB_SEDES.CODSEDE%TYPE, o_resultado OUT NUMBER);
+
+END PKG_SEDES;
+
+/
+
+CREATE OR REPLACE PACKAGE BODY PKG_SEDES AS
+
+    PROCEDURE PROC_BUSCAR_SEDES
+    (
+        p_codcliente    IN TB_CLIENTES.CODCLIENTE%TYPE,
+        o_ListaSedes  OUT SYS_REFCURSOR
+    )
+    IS
+    BEGIN
+
+        OPEN o_ListaSedes FOR
+        SELECT * FROM TB_SEDES WHERE CODCLIENTE = p_codcliente;
+
+    END;
+
+    PROCEDURE PROC_REGISTRAR_SEDE
+    (
+        p_codcliente         IN TB_SEDES.CODCLIENTE%TYPE,
+        p_pais               IN TB_SEDES.PAIS%TYPE,
+        p_departamento       IN TB_SEDES.DEPARTAMENTO%TYPE,
+        p_direccion          IN TB_SEDES.DIRECCION%TYPE,
+        p_telefono           IN TB_SEDES.TELEFONO%TYPE,
+        p_contacto           IN TB_SEDES.CONTACTO%TYPE,
+        o_resultado          OUT NUMBER
+    )
+    IS
+    BEGIN
+
+        INSERT INTO TB_SEDES VALUES
+        (SEQ_SEDES.NEXTVAL, p_codcliente, p_pais, p_departamento, p_direccion, p_telefono, p_contacto);
+
+        o_resultado := SQL%rowcount;
+
+    END;
+
+    PROCEDURE PROC_ACTUALIZAR_SEDE
+    (
+        p_codsede            IN TB_SEDES.CODSEDE%TYPE,
+        p_pais               IN TB_SEDES.PAIS%TYPE,
+        p_departamento       IN TB_SEDES.DEPARTAMENTO%TYPE,
+        p_direccion          IN TB_SEDES.DIRECCION%TYPE,
+        p_telefono           IN TB_SEDES.TELEFONO%TYPE,
+        p_contacto           IN TB_SEDES.CONTACTO%TYPE,
+        o_resultado          OUT NUMBER
+    )
+    IS
+    BEGIN
+
+        UPDATE TB_SEDES
+        SET PAIS = p_pais, DEPARTAMENTO = p_departamento, DIRECCION = p_direccion, TELEFONO = p_telefono, CONTACTO = p_contacto
+        WHERE CODSEDE = p_codsede;
+
+        o_resultado := SQL%rowcount;
+
+    END;
+
+    PROCEDURE PROC_ELIMINAR_SEDE
+    (
+        p_codsede    IN TB_SEDES.CODSEDE%TYPE,
+        o_resultado     OUT NUMBER
+    )
+    IS
+    BEGIN
+
+        DELETE FROM TB_SEDES WHERE CODSEDE = p_codsede;
+
+        o_resultado := SQL%rowcount;
+    END;
+
+END PKG_SEDES;

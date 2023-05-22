@@ -1,0 +1,93 @@
+CREATE OR REPLACE PACKAGE PKG_CLIENTES AS
+
+    PROCEDURE PROC_LISTAR_CLIENTE (c1 OUT SYS_REFCURSOR);
+
+    PROCEDURE PROC_BUSCAR_CLIENTE (p_codcliente IN TB_CLIENTES.CODCLIENTE%TYPE, c1 OUT SYS_REFCURSOR);
+
+    PROCEDURE PROC_REGISTRAR_CLIENTE (p_ruc IN TB_CLIENTES.RUC%TYPE, p_razonsocial IN TB_CLIENTES.RAZON_SOCIAL%TYPE, p_telefono IN TB_CLIENTES.TELEFONO%TYPE, p_contacto IN TB_CLIENTES.CONTACTO%TYPE);
+
+    PROCEDURE PROC_ACTUALIZAR_CLIENTE (p_codcliente IN TB_CLIENTES.CODCLIENTE%TYPE, p_ruc IN TB_CLIENTES.RUC%TYPE, p_razonsocial IN TB_CLIENTES.RAZON_SOCIAL%TYPE, p_telefono IN TB_CLIENTES.TELEFONO%TYPE, p_contacto IN TB_CLIENTES.CONTACTO%TYPE);
+
+    PROCEDURE PROC_ELIMINAR_CLIENTE (p_codcliente IN TB_CLIENTES.CODCLIENTE%TYPE);
+
+END PKG_CLIENTES;
+
+/
+
+CREATE OR REPLACE PACKAGE BODY PKG_CLIENTES AS
+
+    PROCEDURE PROC_LISTAR_CLIENTE
+    (
+        c1  OUT SYS_REFCURSOR
+    )
+    IS
+    BEGIN
+
+        OPEN c1 FOR
+        SELECT * FROM TB_CLIENTES;
+
+    END;
+
+    PROCEDURE PROC_BUSCAR_CLIENTE
+    (
+        p_codcliente    IN TB_CLIENTES.CODCLIENTE%TYPE,
+        c1              OUT SYS_REFCURSOR
+    )
+    IS
+    BEGIN
+
+        OPEN c1 FOR
+        SELECT * FROM TB_CLIENTES WHERE CODCLIENTE = p_codcliente;
+
+    END;
+
+    PROCEDURE PROC_REGISTRAR_CLIENTE
+    (
+        p_ruc                IN TB_CLIENTES.RUC%TYPE,
+        p_razonsocial        IN TB_CLIENTES.RAZON_SOCIAL%TYPE,
+        p_telefono           IN TB_CLIENTES.TELEFONO%TYPE,
+        p_contacto           IN TB_CLIENTES.CONTACTO%TYPE
+
+    )
+    IS
+        --v_existesede        NUMBER(1);
+    BEGIN
+        --v_existesede := 0;
+    
+        /* FALTA VALIDACION QUE PERMITA VARIAS SEDES PERO DE DISTINTOS PAISES Y DEPARTAMENTOS */
+
+        INSERT INTO TB_CLIENTES VALUES
+        (SEQ_CLIENTES.NEXTVAL, p_ruc, p_razonsocial, p_telefono, p_contacto);
+    
+    END;
+
+    PROCEDURE PROC_ACTUALIZAR_CLIENTE
+    (
+        p_codcliente         IN TB_CLIENTES.CODCLIENTE%TYPE,
+        p_ruc                IN TB_CLIENTES.RUC%TYPE,
+        p_razonsocial        IN TB_CLIENTES.RAZON_SOCIAL%TYPE,
+        p_telefono           IN TB_CLIENTES.TELEFONO%TYPE,
+        p_contacto           IN TB_CLIENTES.CONTACTO%TYPE
+
+    )
+    IS
+    BEGIN
+    
+        UPDATE TB_CLIENTES
+        SET RUC = p_ruc, RAZON_SOCIAL = p_razonsocial, TELEFONO = p_telefono, CONTACTO = p_contacto
+        WHERE CODCLIENTE = p_codcliente;
+    
+    END
+
+    PROCEDURE PROC_ELIMINAR_CLIENTE
+    (
+        p_codcliente    IN TB_CLIENTES.CODCLIENTE%TYPE
+    )
+    IS
+    BEGIN
+
+        DELETE FROM TB_CLIENTES WHERE CODCLIENTE = p_codcliente;
+
+    END;
+
+END PKG_CLIENTES;
